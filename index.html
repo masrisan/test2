@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MY TVET Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      background: #f5f6fa;
+      color: #1f2328;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+      color: #1f2328;
+    }
+
+    /* ── Cards ─────────────────────────────────────── */
+    .cards {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 1.5rem 1.75rem;
+      flex: 1 1 240px;
+      border-top: 4px solid transparent;
+    }
+
+    .card--blue  { border-top-color: #3b82f6; }
+    .card--amber { border-top-color: #f59e0b; }
+    .card--green { border-top-color: #22c55e; }
+
+    .card__label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #57606a;
+      margin-bottom: 0.5rem;
+    }
+
+    .card__value {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+
+    .card__detail {
+      font-size: 0.85rem;
+      color: #57606a;
+    }
+
+    /* ── Status badge ───────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .badge:hover { opacity: 0.82; }
+
+    .badge--upcoming  { background: #dbeafe; color: #1d4ed8; }
+    .badge--ongoing   { background: #fef3c7; color: #b45309; }
+    .badge--completed { background: #dcfce7; color: #15803d; }
+
+    /* ── Checklist ──────────────────────────────────── */
+    .checklist-section {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 1.75rem;
+    }
+
+    .checklist-section h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .checklist-counter {
+      font-size: 0.85rem;
+      color: #57606a;
+      margin-bottom: 1.25rem;
+    }
+
+    .checklist {
+      list-style: none;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #f0f1f3;
+    }
+
+    .checklist li:last-child { border-bottom: none; }
+
+    .checklist input[type="checkbox"] {
+      margin-top: 0.18rem;
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: #3b82f6;
+    }
+
+    .checklist .item-text {
+      flex: 1;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .checklist .item-owner {
+      font-size: 0.78rem;
+      color: #57606a;
+      white-space: nowrap;
+      margin-top: 0.1rem;
+    }
+
+    .checklist li.done .item-text {
+      text-decoration: line-through;
+      color: #8c959f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MY TVET Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="cards">
+
+      <!-- Card 1: Students Registered -->
+      <div class="card card--blue">
+        <p class="card__label">Students Registered</p>
+        <p class="card__value">34 <span style="font-size:1.1rem;font-weight:400;color:#57606a;">/ 50</span></p>
+        <p class="card__detail">16 spots remaining</p>
+      </div>
+
+      <!-- Card 2: Tasks Remaining -->
+      <div class="card card--amber">
+        <p class="card__label">Tasks Remaining</p>
+        <p class="card__value">4 <span style="font-size:1.1rem;font-weight:400;color:#57606a;">of 15</span></p>
+        <p class="card__detail">11 tasks completed</p>
+      </div>
+
+      <!-- Card 3: Workshop Status -->
+      <div class="card card--green">
+        <p class="card__label">Workshop Status</p>
+        <p class="card__value" style="font-size:1.25rem;margin-bottom:0.75rem;">
+          <button id="status-badge" class="badge badge--upcoming">Upcoming</button>
+        </p>
+        <p class="card__detail">14 Jun 2025</p>
+      </div>
+
+    </div>
+
+    <!-- Preparation Checklist -->
+    <section class="checklist-section">
+      <h2>Preparation Checklist</h2>
+      <p class="checklist-counter" id="counter"></p>
+      <ul class="checklist" id="checklist">
+        <li class="done">
+          <input type="checkbox" checked />
+          <span class="item-text">Confirm venue booking and room layout</span>
+          <span class="item-owner">Venue Lead</span>
+        </li>
+        <li class="done">
+          <input type="checkbox" checked />
+          <span class="item-text">Send confirmation emails to all registrants</span>
+          <span class="item-owner">Comms Lead</span>
+        </li>
+        <li class="done">
+          <input type="checkbox" checked />
+          <span class="item-text">Assign facilitators to breakout groups</span>
+          <span class="item-owner">Workshop Lead</span>
+        </li>
+        <li>
+          <input type="checkbox" />
+          <span class="item-text">Print materials and handouts</span>
+          <span class="item-owner">Content Lead</span>
+        </li>
+        <li>
+          <input type="checkbox" />
+          <span class="item-text">Set up projector and Wi-Fi</span>
+          <span class="item-owner">Tech Lead</span>
+        </li>
+        <li>
+          <input type="checkbox" />
+          <span class="item-text">Prepare attendance sign-in sheet</span>
+          <span class="item-owner">Admin</span>
+        </li>
+        <li>
+          <input type="checkbox" />
+          <span class="item-text">Brief all volunteers and helpers</span>
+          <span class="item-owner">Workshop Lead</span>
+        </li>
+        <li>
+          <input type="checkbox" />
+          <span class="item-text">Run agenda dry-run with all leads</span>
+          <span class="item-owner">All Leads</span>
+        </li>
+      </ul>
+    </section>
+
+  </div>
+
+  <script>
+    // ── Checklist counter ──────────────────────────
+    const checklist = document.getElementById('checklist');
+    const counter   = document.getElementById('counter');
+
+    function updateCounter() {
+      const total   = checklist.querySelectorAll('input[type="checkbox"]').length;
+      const checked = checklist.querySelectorAll('input[type="checkbox"]:checked').length;
+      counter.textContent = checked + ' of ' + total + ' items completed';
+    }
+
+    checklist.addEventListener('change', function (e) {
+      if (e.target.type === 'checkbox') {
+        e.target.closest('li').classList.toggle('done', e.target.checked);
+        updateCounter();
+      }
+    });
+
+    updateCounter(); // set on load
+
+    // ── Status badge cycle ─────────────────────────
+    const badge  = document.getElementById('status-badge');
+    const states = [
+      { label: 'Upcoming',  cls: 'badge--upcoming'  },
+      { label: 'Ongoing',   cls: 'badge--ongoing'   },
+      { label: 'Completed', cls: 'badge--completed' }
+    ];
+    let stateIndex = 0;
+
+    badge.addEventListener('click', function () {
+      badge.classList.remove(states[stateIndex].cls);
+      stateIndex = (stateIndex + 1) % states.length;
+      badge.classList.add(states[stateIndex].cls);
+      badge.textContent = states[stateIndex].label;
+    });
+  </script>
+
+</body>
+</html>
